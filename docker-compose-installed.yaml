@@ -145,3 +145,56 @@ services:
       - '8025:80'
     depends_on:
       - server
+
+
+  admin-client:
+    image: supply-admin-client
+    container_name: supply-admin-client
+    build:
+      context: .
+      dockerfile: admin_client/Dockerfile-installed
+    expose:
+      - 80
+    ports:
+      - '8026:80'
+    depends_on:
+      - server
+
+  certifying-client:
+    image: supply-certifying-client
+    container_name: supply-certifying-client
+    build:
+      context: .
+      dockerfile: certifying_client/Dockerfile-installed
+    expose:
+      - 80
+    ports:
+      - '8027:80'
+    depends_on:
+      - server
+
+  distributer-client:
+    image: supply-distributer-client
+    container_name: supply-distributer-client
+    build:
+      context: .
+      dockerfile: distributer_client/Dockerfile-installed
+    expose:
+      - 80
+    ports:
+      - '8028:80'
+    depends_on:
+      - server
+
+  manufacturer-client:
+    image: supply-manufacturer-client
+    container_name: supply-manufacturer-client
+    build:
+      context: .
+      dockerfile: manufacturer_client/Dockerfile-installed
+    expose:
+      - 80
+    ports:
+      - '8029:80'
+    depends_on:
+      - server

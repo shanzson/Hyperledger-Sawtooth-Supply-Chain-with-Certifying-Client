@@ -203,3 +203,55 @@ services:
       - '8025:80'
     depends_on:
       - server
+
+  admin-client:
+    image: supply-admin-client
+    container_name: supply-admin-client
+    build: ./admin_client
+    volumes:
+      - ./admin_client/public/:/usr/local/apache2/htdocs/
+    expose:
+      - 80
+    ports:
+      - '8026:80'
+    depends_on:
+      - server
+
+  certifying-client:
+    image: supply-certifying-client
+    container_name: supply-certifying-client
+    build: ./certifying_client
+    volumes:
+      - ./certifying_client/public/:/usr/local/apache2/htdocs/
+    expose:
+      - 80
+    ports:
+      - '8027:80'
+    depends_on:
+      - server
+
+  distributer-client:
+    image: supply-distributer-client
+    container_name: supply-distributer-client
+    build: ./distributer_client
+    volumes:
+      - ./distributer_client/public/:/usr/local/apache2/htdocs/
+    expose:
+      - 80
+    ports:
+      - '8028:80'
+    depends_on:
+      - server
+
+  manufacturer-client:
+    image: supply-manufacturer-client
+    container_name: supply-manufacturer-client
+    build: ./manufacturer_client
+    volumes:
+      - ./manufacturer_client/public/:/usr/local/apache2/htdocs/
+    expose:
+      - 80
+    ports:
+      - '8029:80'
+    depends_on:
+      - server
