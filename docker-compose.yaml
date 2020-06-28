@@ -203,6 +203,7 @@ services:
       - '8025:80'
     depends_on:
       - server
+      - asset-client
 
   admin-client:
     image: supply-admin-client
@@ -216,6 +217,7 @@ services:
       - '8026:80'
     depends_on:
       - server
+      - asset-client
 
   certifying-client:
     image: supply-certifying-client
@@ -229,6 +231,7 @@ services:
       - '8027:80'
     depends_on:
       - server
+      - asset-client
 
   distributer-client:
     image: supply-distributer-client
@@ -242,6 +245,7 @@ services:
       - '8028:80'
     depends_on:
       - server
+      - asset-client
 
   manufacturer-client:
     image: supply-manufacturer-client
@@ -255,3 +259,4 @@ services:
       - '8029:80'
     depends_on:
       - server
+      - asset-client
