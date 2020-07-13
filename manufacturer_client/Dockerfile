@@ -1,4 +1,4 @@
-# Copyright 2017 Intel Corporation
+# Copyright 2018 Intel Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,23 +13,14 @@
 # limitations under the License.
 # -----------------------------------------------------------------------------
 
-FROM node:8 AS static_builder
-
-WORKDIR /supply_chain/asset_client
-COPY asset_client/package.json .
-RUN npm install
-
-COPY protos/ ../protos/
-COPY asset_client/ .
-RUN npm run build
+# NOTE: Use `volumes` to make: manufacturer_client/public/
+# available at: /usr/local/apache2/htdocs/
 
 FROM httpd:2.4
 
-COPY --from=static_builder /supply_chain/asset_client/public/ /usr/local/apache2/htdocs/
-
 RUN echo "\
 \n\
-ServerName asset_client\n\
+ServerName manufacturer_client\n\
 AddDefaultCharset utf-8\n\
 LoadModule proxy_module modules/mod_proxy.so\n\
 LoadModule proxy_http_module modules/mod_proxy_http.so\n\
@@ -37,5 +28,7 @@ ProxyPass /api http://server:3000\n\
 ProxyPassReverse /api http://server:3000\n\
 \n\
 " >>/usr/local/apache2/conf/httpd.conf
+
+ENV PATH $PATH:/sawtooth-supply-chain/bin
 
 EXPOSE 80/tcp

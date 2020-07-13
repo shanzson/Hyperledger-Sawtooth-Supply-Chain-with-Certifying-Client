@@ -1,7 +1,7 @@
 {
-  "name": "hospital_track",
+  "name": "manufacturer_track",
   "version": "0.0.0",
-  "description": "A Sawtooth Supply Chain client web app for ho",
+  "description": "A Sawtooth Supply Chain client web app for tracking assets of manufacturer",
   "main": "",
   "scripts": {
     "compile_protos": "node scripts/compile_protos.js > src/protos.json",

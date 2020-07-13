@@ -25,9 +25,9 @@ services:
       dockerfile: shell/Dockerfile
     volumes:
       - .:/sawtooth-supply-chain
-      - /sawtooth-supply-chain/asset_client/node_modules
+      - /sawtooth-supply-chain/manufacturer_client/node_modules
       - /sawtooth-supply-chain/fish_client/node_modules
-      - /sawtooth-supply-chain/hospital_client/node_modules
+      - /sawtooth-supply-chain/certifying_client/node_modules
       - /sawtooth-supply-chain/server/node_modules
     depends_on:
       - rethink
@@ -39,9 +39,9 @@ services:
     command: |
       bash -c "
         protogen &&
-        cd asset_client/ && npm run build && cd - &&
+        cd manufacturer_client/ && npm run build && cd - &&
         cd fish_client/ && npm run build && cd - &&
-        cd hospital_client/ && npm run build && cd - &&
+        cd certifying_client/ && npm run build && cd - &&
         if [ ! -f /root/.sawtooth/keys/root.priv ]; then
           sawtooth keygen &&
           cd server/ &&
@@ -114,12 +114,12 @@ services:
       - VALIDATOR_URL=tcp://validator:4004
       - DB_HOST=rethink
 
-  asset-client:
-    image: supply-asset-client
-    container_name: supply-asset-client
-    build: ./asset_client
+  manufacturer-client:
+    image: supply-manufacturer-client
+    container_name: supply-manufacturer-client
+    build: ./manufacturer_client
     volumes:
-      - ./asset_client/public/:/usr/local/apache2/htdocs/
+      - ./manufacturer_client/public/:/usr/local/apache2/htdocs/
     expose:
       - 80
     ports:
@@ -140,16 +140,16 @@ services:
     depends_on:
       - server
 
-  hospital-client:
-    image: supply-hospital-client
-    container_name: supply-hospital-client
-    build: ./hospital_client
+  certifying-client:
+    image: supply-certifying-client
+    container_name: supply-certifying-client
+    build: ./certifying_client
     volumes:
-      - ./hospital_client/public/:/usr/local/apache2/htdocs/
+      - ./certifying_client/public/:/usr/local/apache2/htdocs/
     expose:
       - 80
     ports:
-      - '8026:80'
+      - '8025:80'
     depends_on:
       - server
 

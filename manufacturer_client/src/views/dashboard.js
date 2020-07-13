@@ -23,11 +23,11 @@ const Dashboard = {
     return [
       m('.header.text-center.mb-4',
         m('h4', 'Welcome To'),
-        m('h1.mb-3', 'AssetTrack'),
+        m('h1.mb-3', 'Manufacturer Client'),
         m('h5',
           m('em',
             'Powered by ',
-            m('strong', 'Sawtooth Supply Chain')))),
+            m('strong', 'NGO Care4Maharashtra.org')))),
       m('.blurb',
         m('p',
           m('em', 'Sawtooth Supply Chain'),
