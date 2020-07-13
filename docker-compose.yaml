@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ------------------------------------------------------------------------------
-# WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
+
 version: '2.1'
 
 services:
@@ -27,6 +27,7 @@ services:
       - .:/sawtooth-supply-chain
       - /sawtooth-supply-chain/asset_client/node_modules
       - /sawtooth-supply-chain/fish_client/node_modules
+      - /sawtooth-supply-chain/hospital_client/node_modules
       - /sawtooth-supply-chain/server/node_modules
     depends_on:
       - rethink
@@ -40,6 +41,7 @@ services:
         protogen &&
         cd asset_client/ && npm run build && cd - &&
         cd fish_client/ && npm run build && cd - &&
+        cd hospital_client/ && npm run build && cd - &&
         if [ ! -f /root/.sawtooth/keys/root.priv ]; then
           sawtooth keygen &&
           cd server/ &&
@@ -138,6 +140,19 @@ services:
     depends_on:
       - server
 
+  hospital-client:
+    image: supply-hospital-client
+    container_name: supply-hospital-client
+    build: ./hospital_client
+    volumes:
+      - ./hospital_client/public/:/usr/local/apache2/htdocs/
+    expose:
+      - 80
+    ports:
+      - '8026:80'
+    depends_on:
+      - server
+
   rethink:
     image: rethinkdb
     container_name: supply-rethink
@@ -190,73 +205,3 @@ services:
       sawtooth-rest-api -vv
         --connect tcp://validator:4004
         --bind rest-api:8008
-
-  hospital-client:
-    image: supply-hospital-client
-    container_name: supply-hospital-client
-    build: ./hospital_client
-    volumes:
-      - ./hospital_client/public/:/usr/local/apache2/htdocs/
-    expose:
-      - 80
-    ports:
-      - '8025:80'
-    depends_on:
-      - server
-      - asset-client
-
-  admin-client:
-    image: supply-admin-client
-    container_name: supply-admin-client
-    build: ./admin_client
-    volumes:
-      - ./admin_client/public/:/usr/local/apache2/htdocs/
-    expose:
-      - 80
-    ports:
-      - '8026:80'
-    depends_on:
-      - server
-      - asset-client
-
-  certifying-client:
-    image: supply-certifying-client
-    container_name: supply-certifying-client
-    build: ./certifying_client
-    volumes:
-      - ./certifying_client/public/:/usr/local/apache2/htdocs/
-    expose:
-      - 80
-    ports:
-      - '8027:80'
-    depends_on:
-      - server
-      - asset-client
-
-  distributer-client:
-    image: supply-distributer-client
-    container_name: supply-distributer-client
-    build: ./distributer_client
-    volumes:
-      - ./distributer_client/public/:/usr/local/apache2/htdocs/
-    expose:
-      - 80
-    ports:
-      - '8028:80'
-    depends_on:
-      - server
-      - asset-client
-
-  manufacturer-client:
-    image: supply-manufacturer-client
-    container_name: supply-manufacturer-client
-    build: ./manufacturer_client
-    volumes:
-      - ./manufacturer_client/public/:/usr/local/apache2/htdocs/
-    expose:
-      - 80
-    ports:
-      - '8029:80'
-    depends_on:
-      - server
-      - asset-client

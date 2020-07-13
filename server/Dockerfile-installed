@@ -45,11 +45,6 @@ RUN npm install
 #Copy client sample data for script use
 COPY asset_client/sample_data/ ../asset_client/sample_data/
 COPY fish_client/sample_data/ ../fish_client/sample_data/
-COPY hospital_client/sample_data/ ../hospital_client/sample_data/
-COPY admin_client/sample_data/ ../admin_client/sample_data/
-COPY distributer_client/sample_data/ ../distributer_client/sample_data/
-COPY manufacturer_client/sample_data/ ../manufacturer_client/sample_data/
-COPY certifying_client/sample_data/ ../certifying_client/sample_data/
 
 COPY protos/ ../protos/
 COPY server/ .
