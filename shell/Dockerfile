@@ -54,34 +54,21 @@ WORKDIR /sawtooth-supply-chain
 
 # Install NPM dependencies to central location, link to individual components
 COPY bin/splice_json bin/
-COPY asset_client/package.json asset_client/
-COPY fish_client/package.json fish_client/
-COPY hospital_client/package.json hospital_client/
-COPY admin_client/package.json admin_client/
-COPY distributer_client/package.json distributer_client/
 COPY manufacturer_client/package.json manufacturer_client/
+COPY fish_client/package.json fish_client/
 COPY certifying_client/package.json certifying_client/
-
 COPY server/package.json server/
 
 RUN mkdir /node_deps \
   && bin/splice_json \
-    asset_client/package.json \
-    fish_client/package.json \
-    hospital_client/package.json \
-    admin_client/package.json \
-    distributer_client/package.json \
     manufacturer_client/package.json \
+    fish_client/package.json \
     certifying_client/package.json \
     server/package.json \
     > /node_deps/package.json \
   && cd /node_deps && npm install && cd - \
-  && ln -s /node_deps/node_modules asset_client/ \
-  && ln -s /node_deps/node_modules fish_client/ \
-  && ln -s /node_deps/node_modules hospital_client/ \
-  && ln -s /node_deps/node_modules admin_client/ \
-  && ln -s /node_deps/node_modules distributer_client/ \
   && ln -s /node_deps/node_modules manufacturer_client/ \
+  && ln -s /node_deps/node_modules fish_client/ \
   && ln -s /node_deps/node_modules certifying_client/ \
   && ln -s /node_deps/node_modules server/
 

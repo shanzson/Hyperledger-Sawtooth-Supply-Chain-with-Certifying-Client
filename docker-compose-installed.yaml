@@ -72,12 +72,12 @@ services:
       - VALIDATOR_URL=tcp://validator:4004
       - DB_HOST=rethink
 
-  asset-client:
-    image: supply-asset-client-installed
-    container_name: supply-asset-client-installed
+  manufacturer-client:
+    image: supply-manufacturer-client-installed
+    container_name: supply-manufacturer-client-installed
     build:
       context: .
-      dockerfile: asset_client/Dockerfile-installed
+      dockerfile: manufacturer_client/Dockerfile-installed
     expose:
       - 80
     ports:
@@ -95,6 +95,19 @@ services:
       - 80
     ports:
       - '8022:80'
+    depends_on:
+      - server
+
+  certifying-client:
+    image: supply-certifying-client-installed
+    container_name: supply-certifying-client-installed
+    build:
+      context: .
+      dockerfile: certifying_client/Dockerfile-installed
+    expose:
+      - 80
+    ports:
+      - '8025:80'
     depends_on:
       - server
 
@@ -131,75 +144,3 @@ services:
     depends_on:
       - validator
     entrypoint: settings-tp -v -C tcp://validator:4004
-
-
-  hospital-client:
-    image: supply-hospital-client-installed
-    container_name: supply-hospital-client-installed
-    build:
-      context: .
-      dockerfile: hospital_client/Dockerfile-installed
-    expose:
-      - 80
-    ports:
-      - '8025:80'
-    depends_on:
-      - server
-      - asset-client
-
-
-  admin-client:
-    image: supply-admin-client
-    container_name: supply-admin-client
-    build:
-      context: .
-      dockerfile: admin_client/Dockerfile-installed
-    expose:
-      - 80
-    ports:
-      - '8026:80'
-    depends_on:
-      - server
-      - asset-client
-
-  certifying-client:
-    image: supply-certifying-client
-    container_name: supply-certifying-client
-    build:
-      context: .
-      dockerfile: certifying_client/Dockerfile-installed
-    expose:
-      - 80
-    ports:
-      - '8027:80'
-    depends_on:
-      - server
-      - asset-client
-
-  distributer-client:
-    image: supply-distributer-client
-    container_name: supply-distributer-client
-    build:
-      context: .
-      dockerfile: distributer_client/Dockerfile-installed
-    expose:
-      - 80
-    ports:
-      - '8028:80'
-    depends_on:
-      - server
-      - asset-client
-
-  manufacturer-client:
-    image: supply-manufacturer-client
-    container_name: supply-manufacturer-client
-    build:
-      context: .
-      dockerfile: manufacturer_client/Dockerfile-installed
-    expose:
-      - 80
-    ports:
-      - '8029:80'
-    depends_on:
-      - server
-      - asset-client

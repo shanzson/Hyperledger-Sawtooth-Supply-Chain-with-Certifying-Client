@@ -1,7 +1,7 @@
 
 ![Hyperledger Sawtooth](images/sawtooth_logo_light_blue-small.png)
 
-# Sawtooth Supply Chain
+# Chain4India
 
 This is a distributed application to help you trace the provenance and other
 contextual information of any asset. It can be used as-is or customized for
@@ -13,6 +13,7 @@ please see its
 
 ## Contents
 
+- [Initial Start Up](#start)
 - [Components](#components)
 - [Usage](#usage)
   - [Start Up](#start-up)
@@ -23,6 +24,14 @@ please see its
   - [Manually Building Generated Files](#manually-building-generated-files)
 - [Documentation](#documentation)
 - [License](#license)
+
+## Start
+
+Run the following command to start all containers successfully for the First 
+time.
+```bash
+docker-compose up --build
+```
 
 ## Components
 
@@ -60,8 +69,9 @@ all required components in separate containers. Many of the components will be
 available through HTTP endpoints, including:
 
 - The Supply Chain REST API will be at **http://localhost:8020**
-- AssetTrack will be at **http://localhost:8021**
-- FishNet will be at **http://localhost:8022**
+- Manufacturer Client will be at **http://localhost:8021**
+- FishNet (Example) will be at **http://localhost:8022**
+- Certifying Client will be at **http://localhost:8025**
 - RethinkDB's admin panel will be available at **http://localhost:8023**
 - Sawtooth's blockchain REST API will be available at **http://localhost:8024**
 
@@ -150,8 +160,9 @@ The available container names include:
 - supply-shell
 - supply-processor
 - supply-server
-- supply-asset-client
+- supply-manufacturer-client
 - supply-fish-client
+- supply-certifying-client
 - supply-rethink
 - supply-validator
 - supply-settings-tp
