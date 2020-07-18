@@ -75,6 +75,7 @@ const AddAssetForm = {
           type: 'number',
           step: 'any',
           min: 0,
+          max: 1,
           required: false
         })),
 
