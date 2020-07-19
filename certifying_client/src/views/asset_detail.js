@@ -36,7 +36,7 @@ const {
  * Possible selection options
  */
 const authorizableProperties = [
-  ['weight', 'Weight'],
+  ['weight', 'Certification Status'],
   ['location', 'Location'],
   ['temperature', 'Temperature'],
   ['shock', 'Shock']
@@ -462,13 +462,13 @@ const AssetDetail = {
 
         _row(
           _labelProperty(
-            'Weight',
+            'CertificationStatus',
             _propLink(record, 'weight', _formatValue(record, 'weight'))),
           (isReporter(record, 'weight', publicKey) && !record.final
           ? m(ReportValue,
             {
               name: 'weight',
-              label: 'Weight (kg)',
+              label: 'Certification Status',
               record,
               typeField: 'intValue',
               type: payloads.updateProperties.enum.INT,
