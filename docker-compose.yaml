@@ -1,0 +1,207 @@
+# Copyright 2017 Intel Corporation
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# ------------------------------------------------------------------------------
+
+version: '2.1'
+
+services:
+
+  shell:
+    image: supply-shell
+    container_name: supply-shell4
+    build:
+      context: .
+      dockerfile: shell/Dockerfile
+    volumes:
+      - .:/sawtooth-supply-chain
+      - /sawtooth-supply-chain/manufacturer_client/node_modules
+      - /sawtooth-supply-chain/fish_client/node_modules
+      - /sawtooth-supply-chain/certifying_client/node_modules
+      - /sawtooth-supply-chain/server/node_modules
+    depends_on:
+      - rethink
+      - rest-api
+    environment:
+      - VALIDATOR_URL=tcp://validator:4004
+      - DB_HOST=rethink
+      - SERVER=http://server:3000
+    command: |
+      bash -c "
+        protogen &&
+        cd manufacturer_client/ && npm run build && cd - &&
+        cd fish_client/ && npm run build && cd - &&
+        cd certifying_client/ && npm run build && cd - &&
+        if [ ! -f /root/.sawtooth/keys/root.priv ]; then
+          sawtooth keygen &&
+          cd server/ &&
+          npm run init &&
+          npm run make-asset &&
+          npm run make-fish &&
+          npm run seed-sample-assets &&
+          npm run seed-sample-fish &&
+          cd -
+        fi;
+        tail -f /dev/null
+      "
+
+  processor:
+    image: supply-tp
+    container_name: supply-tp4
+    build:
+      context: processor/
+      args:
+        - http_proxy
+        - https_proxy
+        - no_proxy
+    volumes:
+      - .:/sawtooth-supply-chain
+    depends_on:
+      - shell
+      - validator
+    entrypoint: |
+      /sawtooth-supply-chain/bin/supply_chain_tp -vv tcp://validator:4004
+
+  server:
+    image: supply-server
+    container_name: supply-server4
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+      args:
+        - http_proxy
+        - https_proxy
+        - no_proxy
+    volumes:
+      - .:/sawtooth-supply-chain
+      - /sawtooth-supply-chain/server/node_modules
+    expose:
+      - 3000
+    ports:
+      - '8020:3000'
+    depends_on:
+      - validator
+      - rethink
+      - shell
+    environment:
+      - VALIDATOR_URL=tcp://validator:4004
+      - DB_HOST=rethink
+    entrypoint: node index.js
+
+  ledger-sync:
+    image: supply-ledger-sync
+    container_name: supply-ledger-sync4
+    build:
+      context: .
+      dockerfile: ledger_sync/Dockerfile
+    volumes:
+      - .:/sawtooth-supply-chain
+      - /sawtooth-supply-chain/ledger_sync/node_modules
+    depends_on:
+      - validator
+      - rethink
+    environment:
+      - VALIDATOR_URL=tcp://validator:4004
+      - DB_HOST=rethink
+
+  manufacturer-client:
+    image: supply-manufacturer-client
+    container_name: supply-manufacturer-client4
+    build: ./manufacturer_client
+    volumes:
+      - ./manufacturer_client/public/:/usr/local/apache2/htdocs/
+    expose:
+      - 80
+    ports:
+      - '8021:80'
+    depends_on:
+      - server
+
+  fish-client:
+    image: supply-fish-client
+    container_name: supply-fish-client4
+    build: ./fish_client
+    volumes:
+      - ./fish_client/public/:/usr/local/apache2/htdocs/
+    expose:
+      - 80
+    ports:
+      - '8022:80'
+    depends_on:
+      - server
+
+  certifying-client:
+    image: supply-certifying-client
+    container_name: supply-certifying-client4
+    build: ./certifying_client
+    volumes:
+      - ./certifying_client/public/:/usr/local/apache2/htdocs/
+    expose:
+      - 80
+    ports:
+      - '8025:80'
+    depends_on:
+      - server
+
+  rethink:
+    image: rethinkdb
+    container_name: supply-rethink4
+    expose:
+      - 8080
+      - 28015
+    ports:
+      - '8023:8080'
+      - '28020:28015'
+
+  validator:
+    image: hyperledger/sawtooth-validator:1.0
+    container_name: supply-validator4
+    expose:
+      - 4004
+    ports:
+      - '4020:4004'
+    # start the validator with an empty genesis batch
+    entrypoint: |
+      bash -c "
+        if [ ! -f /etc/sawtooth/keys/validator.priv ]; then
+          sawadm keygen &&
+          sawtooth keygen my_key &&
+          sawset genesis -k /root/.sawtooth/keys/my_key.priv &&
+          sawadm genesis config-genesis.batch
+        fi;
+        sawtooth-validator -vv \
+          --endpoint tcp://validator:8800 \
+          --bind component:tcp://eth0:4004 \
+          --bind network:tcp://eth0:8800
+      "
+
+  settings-tp:
+    image: hyperledger/sawtooth-settings-tp:1.0
+    container_name: supply-settings-tp4
+    depends_on:
+      - validator
+    entrypoint: settings-tp -vv -C tcp://validator:4004
+
+  rest-api:
+    image: hyperledger/sawtooth-rest-api:1.0
+    container_name: supply-rest-api4
+    expose:
+      - 8008
+    ports:
+      - '8024:8008'
+    depends_on:
+      - validator
+    entrypoint: |
+      sawtooth-rest-api -vv
+        --connect tcp://validator:4004
+        --bind rest-api:8008
