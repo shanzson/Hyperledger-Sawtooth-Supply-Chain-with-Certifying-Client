@@ -36,7 +36,7 @@ const {
  * Possible selection options
  */
 const authorizableProperties = [
-  ['weight', 'Weight'],
+  ['weight', 'Certification Status'],
   ['location', 'Location'],
   ['temperature', 'Temperature'],
   ['shock', 'Shock']
@@ -462,13 +462,13 @@ const AssetDetail = {
 
         _row(
           _labelProperty(
-            'Weight',
-            _propLink(record, 'weight', _formatValue(record, 'weight'))),
+            'Certification Status',
+            _propLink(record, 'weight', _formatStatusValue(record, 'weight'))),
           (isReporter(record, 'weight', publicKey) && !record.final
           ? m(ReportValue,
             {
               name: 'weight',
-              label: 'Weight (kg)',
+              label: 'Certification Status',
               record,
               typeField: 'intValue',
               type: payloads.updateProperties.enum.INT,
@@ -548,6 +548,21 @@ const _formatValue = (record, propName) => {
   let prop = getPropertyValue(record, propName)
   if (prop) {
     return parsing.stringifyValue(parsing.floatifyValue(prop), '***', propName)
+  } else {
+    return 'N/A'
+  }
+}
+
+const _formatStatusValue = (record, propName) => {
+  let prop = getPropertyValue(record, propName)
+  if ((parsing.stringifyValue(parsing.floatifyValue(prop), '***', propName)=='1') || (parsing.stringifyValue(parsing.floatifyValue(prop), '***', propName)=='2')) {
+	if(parsing.stringifyValue(parsing.floatifyValue(prop), '***', propName)=='1')
+		return 'Certified'
+	else if(parsing.stringifyValue(parsing.floatifyValue(prop), '***', propName)=='2')
+		return 'Not Certified'    
+	else 
+		return 'In Process'
+	//return parsing.stringifyValue(parsing.floatifyValue(prop), '***', propName)
   } else {
     return 'N/A'
   }
