@@ -1,0 +1,32 @@
+[
+  {
+    "name": "asset",
+    "properties": [
+        {
+          "name": "type",
+          "dataType": 1,
+          "required": true
+        },
+        {
+          "name": "subtype",
+          "dataType": 1
+        },
+        {
+          "name": "weight",
+          "dataType": 2
+        },
+        {
+          "name": "location",
+          "dataType": 4
+        },
+        {
+          "name": "temperature",
+          "dataType": 2
+        },
+        {
+          "name": "shock",
+          "dataType": 2
+        }
+    ]
+  }
+]
