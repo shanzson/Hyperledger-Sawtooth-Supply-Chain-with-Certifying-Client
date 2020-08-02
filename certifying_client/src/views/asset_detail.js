@@ -336,19 +336,33 @@ const ReportValue = {
         m('.form-row',
           m('.form-group.col-10',
             m('label.sr-only', { 'for': vnode.attrs.name }, vnode.attrs.label),
-            m("input.form-control[type='text']", {
-              name: vnode.attrs.name,
-              onchange: m.withAttr('value', (value) => {
-                vnode.state.value = value
-              }),
-              value: vnode.state.value,
-              placeholder: vnode.attrs.label
-            })),
+            m("select", 
+                 	[    
+      m("option", {onclick: (e)=>{
+         e.preventDefault()
+         vnode.state.value = 2}}, 
+        "Uncertified"),
+     m("option", {onclick: (e)=>{
+         e.preventDefault()
+         vnode.state.value = 1}}, 
+        "Certified")
+                     ]
+
+            // {
+            //   name: vnode.attrs.name,
+            //   onchange: m.withAttr('value', (value) => {
+            //     vnode.state.value = value
+            //   }),
+            //   value: vnode.state.value,
+            //   placeholder: vnode.attrs.label
+            // }
+            )),
          m('.col-2',
            m('button.btn.btn-primary', 'Update'))))
     ]
   }
 }
+
 
 const AuthorizeReporter = {
   oninit (vnode) {
@@ -540,9 +554,9 @@ const _formatCert = (prop) => {
     let weight = parsing.toFloat(prop)
     console.log(weight)
     if (weight === 1)
-    return 'Uncertified'
-    if (weight === 2)
     return 'Certified'
+    if (weight === 2)
+    return 'Uncertified'
   } else {
     return 'Unknown'
   }

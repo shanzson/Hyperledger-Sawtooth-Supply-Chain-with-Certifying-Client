@@ -334,7 +334,7 @@ const ReportValue = {
         m('.form-row',
           m('.form-group.col-10',
             m('label.sr-only', { 'for': vnode.attrs.name }, vnode.attrs.label),
-            m("input.form-control[type='text']", {
+            m("select", {
               name: vnode.attrs.name,
               onchange: m.withAttr('value', (value) => {
                 vnode.state.value = value
@@ -347,7 +347,23 @@ const ReportValue = {
     ]
   }
 }
+/*
+m('form',
+  m("select",
+[    
+      m("option", {onclick: (e)=>{
+         e.preventDefault()
+         onValue(2)}}, 
+        "Uncertified"),
+     m("option", {onclick: (e)=>{
+         e.preventDefault()
+         onValue(1)}}, 
+        "Certified")
+]
 
+      ))
+}
+*/
 const AuthorizeReporter = {
   oninit (vnode) {
     vnode.state.properties = []
