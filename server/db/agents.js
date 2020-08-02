@@ -33,6 +33,7 @@ const getPublicKey = getAttribute('publicKey')
 const getName = getAttribute('name')
 const getReporters = getAttribute('reporters')
 const getAuthorized = getAttribute('authorized')
+const getType = getAttribute('type')
 
 const hasPublicKey = key => obj => {
   return r.eq(
@@ -74,6 +75,7 @@ const listQuery = filterQuery => block => {
     .map(agent => r.expr({
       'name': getName(agent),
       'key': getPublicKey(agent),
+      'type': getType(agent),
       'owns': getTable('records', block)
         .filter(isRecordOwner(agent))
         .map(getRecordId)
@@ -92,15 +94,23 @@ const listQuery = filterQuery => block => {
 const fetchQuery = (publicKey, auth) => block => {
   return getTable('agents', block)
     .filter(hasPublicKey(publicKey))
-    .pluck('name', 'publicKey')
+    .pluck('name', 'publicKey', 'type')
     .nth(0)
     .do(
       agent => {
         return r.branch(
-          auth,
-          agent.merge(
-            fetchUser(publicKey)),
-          agent)
+          agent('type').eq('Manufacturer'),
+          r.branch(
+            auth,
+            agent.merge(
+              manufacturers(publicKey)),
+            agent),
+          r.branch(
+            auth,
+            agent.merge(
+              certifiers(publicKey)),
+            agent)
+        )
       })
 }
 
@@ -110,6 +120,24 @@ const fetchUser = publicKey => {
     .pluck('username', 'email', 'encryptedKey')
     .nth(0)
 }
+
+const fetchManufacturer = publicKey => {
+  return r.table('manufacturers')
+    .filter(hasPublicKey(publicKey))
+    .pluck('pincode', 'gst_no', 'contact_no')
+    .nth(0)
+}
+
+const fetchCertifier = publicKey => {
+  return r.table('certifiers')
+    .filter(hasPublicKey(publicKey))
+    .pluck('pincode', 'address')
+    .nth(0)
+}
+
+const manufacturers = publicKey => fetchManufacturer(publicKey).merge(fetchUser(publicKey))
+
+const certifiers = publicKey => fetchCertifier(publicKey).merge(fetchUser(publicKey))
 
 const list = filterQuery => db.queryWithCurrentBlock(listQuery(filterQuery))
 

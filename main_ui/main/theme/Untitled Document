@@ -1,0 +1,13 @@
+<div class="col-md-4 col-sm-4">
+							<!-- feature item -->
+							<div class="feature-item">
+								<!-- icon -->
+								
+                                                                <a href="http://localhost:8025/"><i class="fa fa-hospital-o"></i></a>
+
+								<!-- heading -->
+								<h4>Hospitals</h4>
+								<!-- paragraph -->
+								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do'nt ut labore et dolore magna aliqua.</p>
+							</div>
+						</div>

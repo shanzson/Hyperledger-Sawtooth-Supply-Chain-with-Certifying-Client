@@ -28,7 +28,7 @@ const layout = require('../components/layout')
  * Possible selection options
  */
 const authorizableProperties = [
-  ['status', 'Certification Status'],
+  ['weight', 'Certification Status'],
   ['location', 'Location'],
   ['temperature', 'Temperature'],
   ['shock', 'Shock']
@@ -71,11 +71,10 @@ const AddAssetForm = {
           forms.textInput(setter('subtype'), 'Subtype', false)
         ]),
 
-        forms.group(' Certification Status', forms.field(setter('status'), {
+        forms.group(' Certification Status', forms.field_status_dropdown(setter('weight'), {
           type: 'number',
           step: 'any',
           min: 0,
-	  max: 1,
           required: false
         })),
 

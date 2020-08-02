@@ -64,13 +64,16 @@ const passwordCard = state => {
 const userSubmitter = state => e => {
   e.preventDefault()
 
+  // agent type is automatically set to manufacturer
+  state.type = "Manufacturer"
+
   const keys = transactions.makePrivateKey(state.password)
-  const user = _.assign(keys, _.pick(state, 'username', 'email'))
+  const user = _.assign(keys, _.pick(state, 'username', 'email', 'pincode', 'gst_no', 'contact_no'))
   user.password = api.hashPassword(state.password)
-  const agent = payloads.createAgent(_.pick(state, 'name'))
+  const agent = payloads.createAgent(_.pick(state, 'name', 'type'))
 
   transactions.submit(agent, true)
-    .then(() => api.post('users', user))
+    .then(() => api.post('manufacturers', user))
     .then(res => api.setAuth(res.authorization))
     .then(() => m.route.set('/'))
 }
@@ -84,10 +87,13 @@ const SignupForm = {
 
     return m('.signup-form', [
       m('form', { onsubmit: userSubmitter(vnode.state) },
-      m('legend', 'Create Agent'),
+      m('legend', 'Create Manufacturer'),
       forms.textInput(setter('name'), 'Name'),
       forms.emailInput(setter('email'), 'Email'),
       forms.textInput(setter('username'), 'Username'),
+      forms.numberInput(setter('pincode'), "Pincode"),
+      forms.numberInput(setter('gst_no'), "GST No."),
+      forms.numberInput(setter('contact_no'), "Contact No."),
       passwordCard(vnode.state),
       m('.container.text-center',
         'Or you can ',

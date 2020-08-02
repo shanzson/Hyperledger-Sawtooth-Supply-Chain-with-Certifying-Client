@@ -68,7 +68,7 @@ protos.compile()
     const agentAdditions = agents.map(agent => {
       return createTxn(agent.privateKey, encodeTimestampedPayload({
         action: protos.SCPayload.Action.CREATE_AGENT,
-        createAgent: protos.CreateAgentAction.create({ name: agent.name })
+        createAgent: protos.CreateAgentAction.create({ name: agent.name, type: agent.type})
       }))
     })
 
@@ -79,7 +79,7 @@ protos.compile()
   .then(() => {
     console.log('Creating Users . . .')
     const userRequests = agents.map(agent => {
-      const user = _.omit(agent, 'name', 'privateKey', 'hashedPassword')
+      const user = _.omit(agent, 'name', 'privateKey', 'hashedPassword', 'type')
       user.password = agent.hashedPassword
       return request({
         method: 'POST',

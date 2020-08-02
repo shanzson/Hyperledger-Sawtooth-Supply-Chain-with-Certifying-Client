@@ -91,6 +91,7 @@ class SCTransactionHandler:
 
 def _create_agent(payload, signer, timestamp, state):
     name = payload.name
+    Type = payload.type
 
     if not name:
         raise InvalidTransaction(
@@ -108,6 +109,7 @@ def _create_agent(payload, signer, timestamp, state):
         public_key=signer,
         name=name,
         timestamp=timestamp,
+        type=Type,
     )
 
     container.entries.extend([agent])

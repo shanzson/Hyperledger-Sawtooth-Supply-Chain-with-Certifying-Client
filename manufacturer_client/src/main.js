@@ -52,7 +52,7 @@ const loggedInNav = () => {
   const links = [
     ['/create', 'Add Asset'],
     ['/assets', 'View Assets'],
-    ['/agents', 'View Agents']
+    ['/agents', 'View Certifiers']
   ]
   return m(navigation.Navbar, {}, [
     navigation.links(links),
@@ -64,7 +64,7 @@ const loggedInNav = () => {
 const loggedOutNav = () => {
   const links = [
     ['/assets', 'View Assets'],
-    ['/agents', 'View Agents']
+    ['/agents', 'View Certifiers']
   ]
   return m(navigation.Navbar, {}, [
     navigation.links(links),

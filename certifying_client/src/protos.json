@@ -13,6 +13,10 @@
         "timestamp": {
           "type": "uint64",
           "id": 3
+        },
+        "type": {
+          "type": "string",
+          "id": 4
         }
       }
     },
@@ -88,6 +92,10 @@
         "name": {
           "type": "string",
           "id": 1
+        },
+        "type": {
+          "type": "string",
+          "id": 2
         }
       }
     },

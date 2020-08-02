@@ -37,9 +37,7 @@ const {
  */
 const authorizableProperties = [
   ['weight', 'Certification Status'],
-  ['location', 'Location'],
-  ['temperature', 'Temperature'],
-  ['shock', 'Shock']
+  ['location', 'Location']
 ]
 
 const _labelProperty = (label, value) => [
@@ -174,7 +172,7 @@ const ReporterControl = {
         .map(([key, properties]) => {
           return [
             m('.mt-2.d-flex.justify-content-start',
-              `${_agentByKey(agents, key).name} authorized for ${properties}`,
+              `${_agentByKey(agents, key).name} authorized`,
               m('.button.btn.btn-outline-danger.ml-auto', {
                 onclick: (e) => {
                   e.preventDefault()
@@ -190,7 +188,7 @@ const ReporterControl = {
         record.proposals.filter((p) => p.role === 'REPORTER' && p.issuingAgent === publicKey).map(
           (p) =>
             m('.mt-2.d-flex.justify-content-start',
-              `Pending proposal for ${_agentByKey(agents, p.receivingAgent).name} on ${p.properties}`,
+              `Pending proposal for ${_agentByKey(agents, p.receivingAgent).name}`,
               m('.button.btn.btn-outline-danger.ml-auto',
                 {
                   onclick: (e) => {
@@ -215,7 +213,7 @@ const ReporterControl = {
                 .then(onsuccess)
             }
           },
-          `Accept Reporting Authorization for ${proposal.properties}`),
+          `Accept Reporting Authorization`),
           m('button.btn.btn-danger.ml-auto', {
             onclick: (e) => {
               e.preventDefault()
@@ -463,18 +461,9 @@ const AssetDetail = {
         _row(
           _labelProperty(
             'Certification Status',
-            _propLink(record, 'weight', _formatStatusValue(record, 'weight'))),
+            _propLink(record, 'weight', _formatCert(getPropertyValue(record, 'weight')))),
           (isReporter(record, 'weight', publicKey) && !record.final
-          ? m(ReportValue,
-            {
-              name: 'weight',
-              label: 'Certification Status',
-              record,
-              typeField: 'intValue',
-              type: payloads.updateProperties.enum.INT,
-              xform: (x) => parsing.toInt(x),
-              onsuccess: () => _loadData(vnode.attrs.recordId, vnode.state)
-            })
+          ? console.log('Certification processing')
            : null)),
 
         _row(
@@ -488,36 +477,18 @@ const AssetDetail = {
 
         _row(
           _labelProperty(
-            'Temperature',
+            'Quantity',
             _propLink(record, 'temperature', _formatTemp(getPropertyValue(record, 'temperature')))),
           (isReporter(record, 'temperature', publicKey) && !record.final
-          ? m(ReportValue,
-            {
-              name: 'temperature',
-              label: 'Temperature (°C)',
-              record,
-              typeField: 'intValue',
-              type: payloads.updateProperties.enum.INT,
-              xform: (x) => parsing.toInt(x),
-              onsuccess: () => _loadData(vnode.attrs.recordId, vnode.state)
-            })
+          ? console.log('Unable to access')
            : null)),
 
         _row(
           _labelProperty(
-            'Shock',
+            'Quality',
             _propLink(record, 'shock', _formatValue(record, 'shock'))),
           (isReporter(record, 'shock', publicKey) && !record.final
-          ? m(ReportValue,
-            {
-              name: 'shock',
-              label: 'Shock (g)',
-              record,
-              typeField: 'intValue',
-              type: payloads.updateProperties.enum.INT,
-              xform: (x) => parsing.toInt(x),
-              onsuccess: () => _loadData(vnode.attrs.recordId, vnode.state)
-            })
+          ? console.log('Unable to Access')
            : null)),
 
         _row(m(ReporterControl, {
@@ -553,18 +524,16 @@ const _formatValue = (record, propName) => {
   }
 }
 
-const _formatStatusValue = (record, propName) => {
-  let prop = getPropertyValue(record, propName)
-  if ((parsing.stringifyValue(parsing.floatifyValue(prop), '***', propName)=='1') || (parsing.stringifyValue(parsing.floatifyValue(prop), '***', propName)=='2')) {
-	if(parsing.stringifyValue(parsing.floatifyValue(prop), '***', propName)=='1')
-		return 'Certified'
-	else if(parsing.stringifyValue(parsing.floatifyValue(prop), '***', propName)=='2')
-		return 'Not Certified'    
-	else 
-		return 'In Process'
-	//return parsing.stringifyValue(parsing.floatifyValue(prop), '***', propName)
+const _formatCert = (prop) => {
+  if (prop) {
+    let weight = parsing.toFloat(prop)
+    console.log(weight)
+    if (weight === 2)
+    return 'Uncertified'
+    if (weight === 1)
+    return 'Certified'
   } else {
-    return 'N/A'
+    return 'Unknown'
   }
 }
 

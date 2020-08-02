@@ -93,10 +93,10 @@ const editIcon = (obj, key) => {
 }
 
 // Edits a field in state
-const editField = (state, label, key) => {
-  const currentInfo = _.get(state, ['agent', key], '')
+const editField = (state, label, key, route) => {
+  const currentInfo = _.get(state, ['agent', key], 'OOPs')
   const onSubmit = () => {
-    return api.patch('users', _.pick(state.update, key))
+    return api.patch(route, _.pick(state.update, key))
       .then(() => { state.agent[key] = state.update[key] })
   }
 
@@ -141,21 +141,30 @@ const AgentDetailPage = {
   },
 
   view (vnode) {
-    const publicKey = _.get(vnode.state, 'agent.publicKey', '')
+    const publicKey = _.get(vnode.state, 'agent.publicKey', 'OOPs')
+    const type = _.get(vnode.state, "agent.type", "OOPs")
 
     const profileContent = [
       layout.row(privateKeyField(vnode.state)),
       layout.row([
-        editField(vnode.state, 'Username', 'username'),
+        editField(vnode.state, 'Username', 'username', 'users'),
         passwordField(vnode.state)
       ]),
-      layout.row(editField(vnode.state, 'Email', 'email'))
+      layout.row([
+        editField(vnode.state, 'Email', 'email', 'users'),
+        editField(vnode.state, 'Pincode', 'pincode', 'manufacturers')
+      ]),
+      layout.row([
+        editField(vnode.state, 'GST No.', 'gst_no', 'manufacturers'),
+        editField(vnode.state, 'Contact No.', 'contact_no', 'manufacturers')
+      ])
     ]
 
     return [
       layout.title(_.get(vnode.state, 'agent.name', '')),
       m('.container',
         layout.row(staticField('Public Key', publicKey)),
+        layout.row(staticField('Agent Type', type)),
         publicKey === api.getPublicKey() ? profileContent : null)
     ]
   }

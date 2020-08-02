@@ -38,6 +38,18 @@ r.connect({host: HOST, port: PORT})
         }).run(conn)
       })
       .then(() => {
+        console.log('Creating "manufacturers" table...')
+        return r.db(NAME).tableCreate('manufacturers', {
+          primaryKey: 'publicKey'
+        }).run(conn)
+      })
+      .then(() => {
+        console.log('Creating "certifiers" table...')
+        return r.db(NAME).tableCreate('certifiers', {
+          primaryKey: 'publicKey'
+        }).run(conn)
+      })
+      .then(() => {
         // The usernames table is used to quickly ensure unique usernames
         console.log('Creating "usernames" table...')
         return r.db(NAME).tableCreate('usernames', {

@@ -28,6 +28,8 @@ const records = require('./records')
 const blockchain = require('../blockchain/')
 const batcher = require('../blockchain/batcher')
 const config = require('../system/config')
+const manufacturers = require('./manufacturers')
+const certifiers = require('./certifiers')
 
 const router = express.Router()
 
@@ -194,6 +196,34 @@ router.patch('/users/:publicKey', restrict, handleBody((body, params) => {
   }
   return users.update(body, params)
 }))
+
+//============================================
+// Clients' routes
+//============================================
+router.route('/certifiers')
+  .post(handleBody(certifiers.create))
+  .patch(restrict, handleBody(certifiers.update))
+
+// This route is redundant, but matches RESTful expectations
+router.patch('/certifiers/:publicKey', restrict, handleBody((body, params) => {
+  if (params.publicKey !== params.authedKey) {
+    throw new Unauthorized('You may only modify your own user account!')
+  }
+  return certifiers.update(body, params)
+}))
+
+router.route('/manufacturers')
+  .post(handleBody(manufacturers.create))
+  .patch(restrict, handleBody(manufacturers.update))
+
+// This route is redundant, but matches RESTful expectations
+router.patch('/manufacturers/:publicKey', restrict, handleBody((body, params) => {
+  if (params.publicKey !== params.authedKey) {
+    throw new Unauthorized('You may only modify your own user account!')
+  }
+  return manufacturers.update(body, params)
+}))
+
 
 router.use(errorHandler)
 const endpointInfo = getEndpoints(router)

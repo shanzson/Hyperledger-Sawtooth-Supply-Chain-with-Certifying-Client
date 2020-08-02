@@ -54,6 +54,8 @@ message CreateAgentAction {
   // The human-readable name of the Agent. This does not need to be
   // unique.
   string name = 1;
+
+  string type = 2;
 }
 
 

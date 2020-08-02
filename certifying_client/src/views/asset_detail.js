@@ -190,7 +190,7 @@ const ReporterControl = {
         record.proposals.filter((p) => p.role === 'REPORTER' && p.issuingAgent === publicKey).map(
           (p) =>
             m('.mt-2.d-flex.justify-content-start',
-              `Pending proposal for ${_agentByKey(agents, p.receivingAgent).name} on ${p.properties}`,
+              `Pending proposal for ${_agentByKey(agents, p.receivingAgent).name}`,
               m('.button.btn.btn-outline-danger.ml-auto',
                 {
                   onclick: (e) => {
@@ -215,7 +215,7 @@ const ReporterControl = {
                 .then(onsuccess)
             }
           },
-          `Accept Reporting Authorization for ${proposal.properties}`),
+          `Accept Reporting Authorization`),
           m('button.btn.btn-danger.ml-auto', {
             onclick: (e) => {
               e.preventDefault()
@@ -462,8 +462,8 @@ const AssetDetail = {
 
         _row(
           _labelProperty(
-            'CertificationStatus',
-            _propLink(record, 'weight', _formatValue(record, 'weight'))),
+            'Certification Status',
+            _propLink(record, 'weight', _formatCert(getPropertyValue(record, 'weight')))),
           (isReporter(record, 'weight', publicKey) && !record.final
           ? m(ReportValue,
             {
@@ -491,16 +491,7 @@ const AssetDetail = {
             'Temperature',
             _propLink(record, 'temperature', _formatTemp(getPropertyValue(record, 'temperature')))),
           (isReporter(record, 'temperature', publicKey) && !record.final
-          ? m(ReportValue,
-            {
-              name: 'temperature',
-              label: 'Temperature (°C)',
-              record,
-              typeField: 'intValue',
-              type: payloads.updateProperties.enum.INT,
-              xform: (x) => parsing.toInt(x),
-              onsuccess: () => _loadData(vnode.attrs.recordId, vnode.state)
-            })
+          ? console.log('Unable to Access')
            : null)),
 
         _row(
@@ -508,16 +499,7 @@ const AssetDetail = {
             'Shock',
             _propLink(record, 'shock', _formatValue(record, 'shock'))),
           (isReporter(record, 'shock', publicKey) && !record.final
-          ? m(ReportValue,
-            {
-              name: 'shock',
-              label: 'Shock (g)',
-              record,
-              typeField: 'intValue',
-              type: payloads.updateProperties.enum.INT,
-              xform: (x) => parsing.toInt(x),
-              onsuccess: () => _loadData(vnode.attrs.recordId, vnode.state)
-            })
+          ? console.log('Unable to Access')
            : null)),
 
         _row(m(ReporterControl, {
@@ -550,6 +532,19 @@ const _formatValue = (record, propName) => {
     return parsing.stringifyValue(parsing.floatifyValue(prop), '***', propName)
   } else {
     return 'N/A'
+  }
+}
+
+const _formatCert = (prop) => {
+  if (prop) {
+    let weight = parsing.toFloat(prop)
+    console.log(weight)
+    if (weight === 1)
+    return 'Uncertified'
+    if (weight === 2)
+    return 'Certified'
+  } else {
+    return 'Unknown'
   }
 }
 

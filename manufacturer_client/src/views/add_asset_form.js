@@ -71,7 +71,7 @@ const AddAssetForm = {
           forms.textInput(setter('subtype'), 'Subtype', false)
         ]),
 
-        forms.group(' Certification Status', forms.field(setter('weight'), {
+        forms.group(' Certification Status', forms.field_status_dropdown(setter('weight'), {
           type: 'number',
           step: 'any',
           min: 0,
