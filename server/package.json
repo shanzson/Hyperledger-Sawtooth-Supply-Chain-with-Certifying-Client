@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/hyperledger/sawtooth-supply-chain#readme",
   "dependencies": {
-    "bcrypt": "^1.0.3",
+    "bcrypt": "^5.0.0",
     "body-parser": "^1.17.2",
     "express": "^4.15.4",
     "js-schema": "^1.0.1",
