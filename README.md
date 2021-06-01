@@ -1,6 +1,9 @@
 
 ![Hyperledger Sawtooth](images/sawtooth_logo_light_blue-small.png)
 
+# AWS EC2 Docs
+- docker-compose version is 1.8.0 which does not run this code. So updating the docker-compose version.
+
 # Chain4India
 
 This is a distributed application to help you trace the provenance and other
