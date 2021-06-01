@@ -3,6 +3,15 @@
 
 # AWS EC2 Docs
 - docker-compose version is 1.8.0 which does not run this code. So updating the docker-compose version.
+- To update docker-compose to latest version, run the following commands-
+```bash
+#!/bin/bash
+compose_version=$(curl https://api.github.com/repos/docker/compose/releases/latest | jq .name -r)
+output='/usr/local/bin/docker-compose'
+curl -L https://github.com/docker/compose/releases/download/$compose_version/docker-compose-$(uname -s)-$(uname -m) -o $output
+chmod +x $output
+echo $(docker-compose --version)
+```
 
 # Chain4India
 
