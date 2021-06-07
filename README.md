@@ -12,6 +12,10 @@ curl -L https://github.com/docker/compose/releases/download/$compose_version/doc
 chmod +x $output
 echo $(docker-compose --version)
 ```
+# Grafana Metrics Resources
+- [Using Grafana to display Metrics - Sawtooth docs 1.2.6](https://sawtooth.hyperledger.org/docs/core/releases/latest/sysadmin_guide/grafana_configuration.html?highlight=grafana)
+- [Hyperledger Blog](https://www.hyperledger.org/blog/2019/01/25/hyperledger-sawtooth-blockchain-performance-metrics-with-grafana)
+- [Intelligent Systems Monitoring Community Article](http://intelligentsystemsmonitoring.com/community/blockchain-community/hyperledger-sawtooth-blockchain-performance-metrics-with-grafana/)
 
 # Chain4India
 
