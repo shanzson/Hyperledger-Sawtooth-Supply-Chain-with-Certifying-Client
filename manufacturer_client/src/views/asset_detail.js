@@ -493,7 +493,7 @@ const AssetDetail = {
 
         _row(
           _labelProperty(
-            'Quantity',
+            'Temperature',
             _propLink(record, 'temperature', _formatTemp(getPropertyValue(record, 'temperature')))),
           (isReporter(record, 'temperature', publicKey) && !record.final
           ? console.log('Unable to access')
@@ -501,7 +501,7 @@ const AssetDetail = {
 
         _row(
           _labelProperty(
-            'Quality',
+            'Shock',
             _propLink(record, 'shock', _formatValue(record, 'shock'))),
           (isReporter(record, 'shock', publicKey) && !record.final
           ? console.log('Unable to Access')

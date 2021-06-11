@@ -87,7 +87,7 @@ const SignupForm = {
 
     return m('.signup-form', [
       m('form', { onsubmit: userSubmitter(vnode.state) },
-      m('legend', 'Create Manufacturer'),
+      m('legend', 'Create Agent'),
       forms.textInput(setter('name'), 'Name'),
       forms.emailInput(setter('email'), 'Email'),
       forms.textInput(setter('username'), 'Username'),
