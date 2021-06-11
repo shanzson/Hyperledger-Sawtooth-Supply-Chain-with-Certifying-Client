@@ -57,7 +57,7 @@ const AgentList = {
             'Owns',
             'Custodian',
             'Reports',
-            'type'
+            //'type'
           ],
           rows: vnode.state.filteredAgents.slice(
               vnode.state.currentPage * PAGE_SIZE,
@@ -71,13 +71,13 @@ const AgentList = {
                   agent.owns.length,
                   agent.custodian.length,
                   agent.reports.length,
-                  agent.type
+                  //agent.type
                 ]
               } else {
                 return []
               }
             }),
-          noRowsText: 'No manufacturers found'
+          noRowsText: 'No Agents found'
         })
      )
     ]
