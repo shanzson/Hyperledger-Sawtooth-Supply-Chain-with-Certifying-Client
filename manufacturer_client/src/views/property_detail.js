@@ -48,16 +48,15 @@ const typedWidget = state => {
 }
 
 const updateSubmitter = state => e => {
-  e.preventDefault()
   const { name, dataType, recordId } = state.property
-
+  console.log('I am there!')
   let value = null
   if (state.update) {
     value = state.update
   } else {
     value = state.tmp
   }
-
+  
   const update = { name }
   update.dataType = payloads.updateProperties.enum[dataType]
   update[`${dataType.toLowerCase()}Value`] = value
@@ -129,6 +128,45 @@ const updateForm = state => {
   ])
 }
 
+//Button for fetching IoT device data
+const iotForm = state => {
+  const { name, dataType, recordId } = state.property
+  if (recordId === '879'){
+    fetch('http://blynk-cloud.com/qTr-WN8jLX1n2GnjTFScVlHh1x9d454j/get/v6')
+    .then(res =>{ 
+        if(res.ok){
+            console.log('SUCCESS!')
+            res.json()
+            .then(data => {
+                const temp = data[0]
+                console.log('Temperature: ', temp, ' with type: ', typeof(temp))
+                var t = parsing.floatifyValue(temp)
+                state.update = parsing.toInt(t)                 
+		console.log('State.update: ', state.update, ' with type: ', typeof(state.update))
+                return state
+
+                // return m('form.my-5', {
+                //   onsubmit: updateSubmitter(state)
+                // }, [
+                //   m('.container',
+                   
+                //       m('.col-md-2',
+                //         m('button.btn.btn-primary', { type: 'submit' }, 'Fetch IoT')))
+                // ])
+            }).then((state)=>{
+              console.log('Update Submitter is below me...')
+              console.log('state', state)
+              updateSubmitter(state)
+            })
+        }
+        else {
+            console.log('Not Successful :(')
+        }
+    })
+    .catch(error => console.log('ERROR!'))
+  }
+}
+
 /**
  * Displays updates to a property, and form for submitting new updates.
  */
@@ -169,7 +207,7 @@ const PropertyDetailPage = {
     return [
       layout.title(`${name} of ${record}`),
       typedWidget(vnode.state),
-      isReporter ? updateForm(vnode.state) : null,
+      isReporter ? iotForm(vnode.state) : null,
       m('.container',
         layout.row([
           m('h5.mr-auto', 'Update History'),

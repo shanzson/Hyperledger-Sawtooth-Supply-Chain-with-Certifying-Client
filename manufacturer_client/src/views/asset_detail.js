@@ -37,7 +37,8 @@ const {
  */
 const authorizableProperties = [
   ['weight', 'Certification Status'],
-  ['location', 'Location']
+  ['location', 'Location'],
+  ['temperature', 'Temperature']
 ]
 
 const _labelProperty = (label, value) => [
@@ -313,6 +314,39 @@ const ReportLocation = {
   }
 }
 
+const ReportTemperature = (vnode) => {
+    let onsuccess = vnode.onsuccess || (() => null)
+    let xform = vnode.xform || ((x) => x)
+    console.log('VNODE ', vnode)
+    if (vnode.record.recordId === '879'){
+      fetch('http://blynk-cloud.com/qTr-WN8jLX1n2GnjTFScVlHh1x9d454j/get/v6')
+      .then(res =>{ 
+          if(res.ok){
+              console.log('SUCCESS!')
+              res.json()
+              .then(data => {
+                  const temp = data[0]
+                  console.log('Temperature: ', temp, ' with type: ', typeof(temp))
+                  var t = parsing.floatifyValue(temp)
+                  vnode.value = parsing.toInt(t) 
+                  console.log('State.update: ', vnode.value, ' with type: ', typeof(vnode.value))
+                      _updateProperty(vnode.record, {
+                        name: vnode.name,
+                        [vnode.typeField]: xform(vnode.value),
+                        dataType: vnode.type
+                      }).then(() => {
+                        vnode.value = ''
+                      }).then(onsuccess)
+              })
+          }
+          else {
+              console.log('Not Successful :(')
+          }
+      })
+      .catch(error => console.log('ERROR!'))
+    }
+  }
+
 const ReportValue = {
   view: (vnode) => {
     let onsuccess = vnode.attrs.onsuccess || (() => null)
@@ -491,13 +525,21 @@ const AssetDetail = {
            ? m(ReportLocation, { record, onsuccess: () => _loadData(record.recordId, vnode.state) })
            : null)),
 
-        _row(
-          _labelProperty(
-            'Temperature',
-            _propLink(record, 'temperature', _formatTemp(getPropertyValue(record, 'temperature')))),
-          (isReporter(record, 'temperature', publicKey) && !record.final
-          ? console.log('Unable to access')
-           : null)),
+           _row(
+            _labelProperty(
+              'Temperature',
+              _propLink(record, 'temperature', _formatTemp(getPropertyValue(record, 'temperature')))),
+            (isReporter(record, 'temperature', publicKey) && !record.final
+            ? ReportTemperature({
+              name: 'temperature',
+              label: 'Temperature (°C)',
+              record,
+              typeField: 'intValue',
+              type: payloads.updateProperties.enum.INT,
+              xform: (x) => parsing.toInt(x),
+              onsuccess: () => _loadData(vnode.attrs.recordId, vnode.state)
+            })
+             : null)),
 
         _row(
           _labelProperty(
@@ -619,6 +661,7 @@ const _answerProposal = (record, publicKey, role, response) => {
 }
 
 const _updateProperty = (record, value) => {
+  console.log('record ', record, 'value', value)
   let updatePayload = payloads.updateProperties({
     recordId: record.recordId,
     properties: [value]
